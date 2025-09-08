@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ar">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: black;
+            overflow: hidden;
+            font-family: monospace;
+            direction: rtl;
+        }
+
+        .message {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            text-align: center;
+            font-size: 12vw;
+            font-weight: bold;
+            color: lime;
+            text-shadow: 0 0 10px red, 0 0 30px red, 0 0 60px red;
+            animation: flicker 0.1s infinite;
+            z-index: 10;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            25% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            75% {
+                opacity: 0.3;
+            }
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="message">تم الاختراق</div>
+    <canvas id="matrix"></canvas>
+
+    <!-- الصوت المخيف -->
+    <audio id="scaryAudio" autoplay loop>
+        <source src="scary.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // MATRIX EFFECT
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
+        const fontSize = 20;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        for (let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
+
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "lime";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // محاولة تشغيل الصوت على الموبايل حتى لو متصفح منع autoplay
+        const audio = document.getElementById("scaryAudio");
+        document.addEventListener("click", () => audio.play());
+
+        // Optional: Auto fullscreen on mobile
+        document.body.requestFullscreen?.();
+    </script>
+</body>
+
+</html>
